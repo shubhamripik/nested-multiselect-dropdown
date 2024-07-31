@@ -1,6 +1,5 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
-import { PartialSelectedCheckBox, SelectedCheckBox, UnSelectedCheckBox } from "./CheckBoxes";
 
 type Category = {
   categoryId: string;
@@ -72,12 +71,7 @@ const SelectCategoryDropdown = ({
                 key={category}
                 className="flex flex-row items-center gap-2 p-1 pl-4 hover:bg-gray-100 rounded"
               >
-                <RenderCheckBox relationShips={relationShips[category]} category={category} />
-                {/* <Checkbox
-                    checked={
-                      !relationShips?.[category]?.children && selectedCategories.includes(category)
-                    }
-                  /> */}
+                <Checkbox checked={selectedCategories.includes(category)} />
                 <p className="text-[15px]">{categoriesMap?.[category]}</p>
               </div>
               {relationShips?.[category]?.children && (
@@ -87,37 +81,6 @@ const SelectCategoryDropdown = ({
           ))}
       </div>
     );
-  };
-
-  const RenderCheckBox = ({
-    relationShips,
-    category,
-  }: {
-    relationShips: Category | null;
-    category: string;
-  }) => {
-    const allChildrenIds = Object.keys(relationShips?.children || {});
-
-    if (allChildrenIds.length === 0) {
-      return selectedCategories.includes(category) ? <SelectedCheckBox /> : <UnSelectedCheckBox />;
-    }
-
-    const selectedChildrenCount = allChildrenIds.filter((childId) =>
-      selectedCategories.includes(childId)
-    ).length;
-
-    if (selectedChildrenCount === allChildrenIds.length) {
-      // All children are selected
-      return <SelectedCheckBox />;
-    }
-
-    if (selectedChildrenCount > 0) {
-      // Some children are selected
-      return <PartialSelectedCheckBox />;
-    }
-
-    // No children are selected
-    return <UnSelectedCheckBox />;
   };
 
   return (
@@ -136,12 +99,13 @@ const SelectCategoryDropdown = ({
                   key={category}
                   className="flex flex-row items-center gap-2 p-1 pl-4 hover:bg-gray-100 rounded"
                 >
-                  <RenderCheckBox relationShips={relationShips[category]} category={category} />
-                  {/* <Checkbox
+                  <Checkbox
                     checked={
-                      !relationShips?.[category]?.children && selectedCategories.includes(category)
+                      (!relationShips?.[category]?.children &&
+                        selectedCategories.includes(category)) ||
+                      selectedCategories.includes(category)
                     }
-                  /> */}
+                  />
                   <p className="text-[15px]">{categoriesMap?.[category]}</p>
                 </div>
                 {relationShips?.[category]?.children && (

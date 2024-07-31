@@ -1,6 +1,5 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
-import { PartialSelectedCheckBox, SelectedCheckBox, UnSelectedCheckBox } from "./CheckBoxes";
 
 type Category = {
   categoryId: string;
@@ -96,28 +95,36 @@ const SelectCategoryDropdown = ({
     relationShips: Category | null;
     category: string;
   }) => {
-    const allChildrenIds = Object.keys(relationShips?.children || {});
+    // Check if the category itself is selected
+    const isCategorySelected = selectedCategories.includes(category);
 
-    if (allChildrenIds.length === 0) {
-      return selectedCategories.includes(category) ? <SelectedCheckBox /> : <UnSelectedCheckBox />;
+    // Check if all children are selected
+    const allChildrenSelected = () => {
+      if (!relationShips.children) return true;
+      return Object.keys(relationShips.children).every((childId) =>
+        selectedCategories.includes(childId)
+      );
+    };
+
+    // Check if any child is selected
+    const anyChildSelected = () => {
+      if (!relationShips.children) return false;
+      return Object.keys(relationShips.children).some((childId) =>
+        selectedCategories.includes(childId)
+      );
+    };
+
+    if (isCategorySelected) {
+      if (allChildrenSelected()) {
+        return <div className="text-green-600">Full</div>;
+      } else if (anyChildSelected()) {
+        return <div className="text-yellow-600">Partial</div>;
+      } else {
+        return <div className="text-gray-600">Sel</div>;
+      }
+    } else {
+      return <div className="text-gray-600">Un-sel</div>;
     }
-
-    const selectedChildrenCount = allChildrenIds.filter((childId) =>
-      selectedCategories.includes(childId)
-    ).length;
-
-    if (selectedChildrenCount === allChildrenIds.length) {
-      // All children are selected
-      return <SelectedCheckBox />;
-    }
-
-    if (selectedChildrenCount > 0) {
-      // Some children are selected
-      return <PartialSelectedCheckBox />;
-    }
-
-    // No children are selected
-    return <UnSelectedCheckBox />;
   };
 
   return (

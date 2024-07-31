@@ -102,6 +102,7 @@ const SelectCategoryDropdown = ({
       return selectedCategories.includes(category) ? <SelectedCheckBox /> : <UnSelectedCheckBox />;
     }
 
+    // Count how many children are selected
     const selectedChildrenCount = allChildrenIds.filter((childId) =>
       selectedCategories.includes(childId)
     ).length;

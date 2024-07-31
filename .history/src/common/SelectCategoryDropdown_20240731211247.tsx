@@ -1,6 +1,5 @@
 import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
-import { PartialSelectedCheckBox, SelectedCheckBox, UnSelectedCheckBox } from "./CheckBoxes";
 
 type Category = {
   categoryId: string;
@@ -96,28 +95,27 @@ const SelectCategoryDropdown = ({
     relationShips: Category | null;
     category: string;
   }) => {
-    const allChildrenIds = Object.keys(relationShips?.children || {});
-
-    if (allChildrenIds.length === 0) {
-      return selectedCategories.includes(category) ? <SelectedCheckBox /> : <UnSelectedCheckBox />;
+    let allChildrenIds = Object.keys(relationShips?.children || {});
+    if (allChildrenIds.length == 0 && selectedCategories.includes(category)) {
+      return <CheckBox sx={{ color: "black" }} />;
     }
-
-    const selectedChildrenCount = allChildrenIds.filter((childId) =>
-      selectedCategories.includes(childId)
-    ).length;
-
-    if (selectedChildrenCount === allChildrenIds.length) {
-      // All children are selected
-      return <SelectedCheckBox />;
+    if (allChildrenIds.length > 0) {
+      //check if all the children are in the selectedCateogries
+      let numberOfChildrenSelected = 0;
+      for (let i = 0; i < allChildrenIds.length; i++) {
+        if (selectedCategories.includes(allChildrenIds[i])) {
+          numberOfChildrenSelected++;
+        }
+      }
+      if (numberOfChildrenSelected === allChildrenIds.length) {
+        return <CheckBox sx={{ color: "black" }} />;
+      }
+      if (numberOfChildrenSelected > 0) {
+        return <CheckBox sx={{ color: "gray" }} />;
+      }
     }
-
-    if (selectedChildrenCount > 0) {
-      // Some children are selected
-      return <PartialSelectedCheckBox />;
-    }
-
-    // No children are selected
-    return <UnSelectedCheckBox />;
+    return <CheckBoxOutlineBlank />;
+    // return <Checkbox checked={selectedCategories.includes(category)} />;
   };
 
   return (

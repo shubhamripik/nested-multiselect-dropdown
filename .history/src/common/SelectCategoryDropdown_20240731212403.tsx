@@ -96,12 +96,15 @@ const SelectCategoryDropdown = ({
     relationShips: Category | null;
     category: string;
   }) => {
+    // Get all children IDs
     const allChildrenIds = Object.keys(relationShips?.children || {});
 
     if (allChildrenIds.length === 0) {
+      // No children, return SelectedCheckBox if the category itself is selected
       return selectedCategories.includes(category) ? <SelectedCheckBox /> : <UnSelectedCheckBox />;
     }
 
+    // Count how many children are selected
     const selectedChildrenCount = allChildrenIds.filter((childId) =>
       selectedCategories.includes(childId)
     ).length;

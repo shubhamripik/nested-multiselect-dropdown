@@ -1,6 +1,5 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
-import { PartialSelectedCheckBox, SelectedCheckBox, UnSelectedCheckBox } from "./CheckBoxes";
 
 type Category = {
   categoryId: string;
@@ -40,8 +39,7 @@ const SelectCategoryDropdown = ({
     categoryId: string,
     children: CategoryMap | null
   ) => {
-    console.log({ categoryId });
-    if (selectedCategories.includes(categoryId) === false) {
+    if (!selectedCategories.includes(categoryId)) {
       //these tempSelectedCategories has to be added in the selected ones
       let tempSelectedCategories = [...selectedCategories, categoryId];
       // onChange([...selectedCategories, categoryId]);
@@ -66,18 +64,12 @@ const SelectCategoryDropdown = ({
         {Object.keys(relationShips)
           .filter((category) => relationShips[category].categoryValue.indexOf("diffnode") === -1)
           .map((category) => (
-            <div key={category} className="flex flex-col">
+            <div className="flex flex-col">
               <div
-                onClick={() => handleChange(category, relationShips?.[category]?.children)}
                 key={category}
                 className="flex flex-row items-center gap-2 p-1 pl-4 hover:bg-gray-100 rounded"
               >
-                <RenderCheckBox relationShips={relationShips[category]} category={category} />
-                {/* <Checkbox
-                    checked={
-                      !relationShips?.[category]?.children && selectedCategories.includes(category)
-                    }
-                  /> */}
+                <Checkbox checked={selectedCategories.includes(category)} name={category} />
                 <p className="text-[15px]">{categoriesMap?.[category]}</p>
               </div>
               {relationShips?.[category]?.children && (
@@ -88,38 +80,6 @@ const SelectCategoryDropdown = ({
       </div>
     );
   };
-
-  const RenderCheckBox = ({
-    relationShips,
-    category,
-  }: {
-    relationShips: Category | null;
-    category: string;
-  }) => {
-    const allChildrenIds = Object.keys(relationShips?.children || {});
-
-    if (allChildrenIds.length === 0) {
-      return selectedCategories.includes(category) ? <SelectedCheckBox /> : <UnSelectedCheckBox />;
-    }
-
-    const selectedChildrenCount = allChildrenIds.filter((childId) =>
-      selectedCategories.includes(childId)
-    ).length;
-
-    if (selectedChildrenCount === allChildrenIds.length) {
-      // All children are selected
-      return <SelectedCheckBox />;
-    }
-
-    if (selectedChildrenCount > 0) {
-      // Some children are selected
-      return <PartialSelectedCheckBox />;
-    }
-
-    // No children are selected
-    return <UnSelectedCheckBox />;
-  };
-
   return (
     <div className="w-full flex flex-row justify-center items-center">
       <Select>
@@ -130,18 +90,19 @@ const SelectCategoryDropdown = ({
           {Object.keys(relationShips)
             .filter((category) => relationShips[category].categoryValue.indexOf("diffnode") === -1)
             .map((category) => (
-              <div key={category} className="flex flex-col">
+              <div className="flex flex-col">
                 <div
                   onClick={() => handleChange(category, relationShips?.[category]?.children)}
                   key={category}
                   className="flex flex-row items-center gap-2 p-1 pl-4 hover:bg-gray-100 rounded"
                 >
-                  <RenderCheckBox relationShips={relationShips[category]} category={category} />
-                  {/* <Checkbox
-                    checked={
-                      !relationShips?.[category]?.children && selectedCategories.includes(category)
-                    }
-                  /> */}
+                  <Checkbox
+                    checked={selectedCategories.includes(category)}
+                    name={category}
+                    // onCheckedChange={(checked) =>
+                    //   handleChange(checked, category, relationShips?.[category]?.children)
+                    // }
+                  />
                   <p className="text-[15px]">{categoriesMap?.[category]}</p>
                 </div>
                 {relationShips?.[category]?.children && (

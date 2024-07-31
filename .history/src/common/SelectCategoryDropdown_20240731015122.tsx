@@ -1,6 +1,5 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
-import { PartialSelectedCheckBox, SelectedCheckBox, UnSelectedCheckBox } from "./CheckBoxes";
 
 type Category = {
   categoryId: string;
@@ -96,28 +95,27 @@ const SelectCategoryDropdown = ({
     relationShips: Category | null;
     category: string;
   }) => {
-    const allChildrenIds = Object.keys(relationShips?.children || {});
+    //here the relationship object also contains the parent categoryId and then it has children
+    let selfSelected = selectedCategories.includes(category);
+    let atleastOneChildSelected = false;
+    let isAllChildrenSelected = true;
 
-    if (allChildrenIds.length === 0) {
-      return selectedCategories.includes(category) ? <SelectedCheckBox /> : <UnSelectedCheckBox />;
-    }
+    Object.keys(relationShips?.children || {}).forEach((childCategory) => {
+      if (selectedCategories.includes(childCategory)) {
+        atleastOneChildSelected = true;
+      } else {
+        isAllChildrenSelected = false;
+      }
+    });
 
-    const selectedChildrenCount = allChildrenIds.filter((childId) =>
-      selectedCategories.includes(childId)
-    ).length;
+    return (
+      <div className="bg-red-100 flex flex-col">
+        <div>SELF {selfSelected ? "Yes" : "No"}</div>
+        <div>AOC {atleastOneChildSelected ? "Yes" : "No"}</div>
+      </div>
+    );
 
-    if (selectedChildrenCount === allChildrenIds.length) {
-      // All children are selected
-      return <SelectedCheckBox />;
-    }
-
-    if (selectedChildrenCount > 0) {
-      // Some children are selected
-      return <PartialSelectedCheckBox />;
-    }
-
-    // No children are selected
-    return <UnSelectedCheckBox />;
+    // return <Checkbox checked={isCompleteSelected} />;
   };
 
   return (

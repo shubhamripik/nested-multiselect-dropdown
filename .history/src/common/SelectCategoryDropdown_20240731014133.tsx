@@ -1,6 +1,5 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
-import { PartialSelectedCheckBox, SelectedCheckBox, UnSelectedCheckBox } from "./CheckBoxes";
 
 type Category = {
   categoryId: string;
@@ -96,28 +95,19 @@ const SelectCategoryDropdown = ({
     relationShips: Category | null;
     category: string;
   }) => {
-    const allChildrenIds = Object.keys(relationShips?.children || {});
-
-    if (allChildrenIds.length === 0) {
-      return selectedCategories.includes(category) ? <SelectedCheckBox /> : <UnSelectedCheckBox />;
-    }
-
-    const selectedChildrenCount = allChildrenIds.filter((childId) =>
-      selectedCategories.includes(childId)
-    ).length;
-
-    if (selectedChildrenCount === allChildrenIds.length) {
-      // All children are selected
-      return <SelectedCheckBox />;
-    }
-
-    if (selectedChildrenCount > 0) {
-      // Some children are selected
-      return <PartialSelectedCheckBox />;
-    }
-
-    // No children are selected
-    return <UnSelectedCheckBox />;
+    //here the relationship object also contains the parent categoryId and then it has children
+    let check1 = selectedCategories.includes(category);
+    let check2 = true;
+    let isPartialSelected = false;
+    Object.keys(relationShips?.children || {}).forEach((childCategory) => {
+      if (!selectedCategories.includes(childCategory)) {
+        check2 = false;
+      } else {
+        isPartialSelected = true;
+      }
+    });
+    let isCompleteSelected = check1 && check2;
+    return <Checkbox checked={isCompleteSelected} />;
   };
 
   return (

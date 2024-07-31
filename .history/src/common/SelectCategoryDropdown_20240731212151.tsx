@@ -96,28 +96,28 @@ const SelectCategoryDropdown = ({
     relationShips: Category | null;
     category: string;
   }) => {
-    const allChildrenIds = Object.keys(relationShips?.children || {});
-
-    if (allChildrenIds.length === 0) {
-      return selectedCategories.includes(category) ? <SelectedCheckBox /> : <UnSelectedCheckBox />;
-    }
-
-    const selectedChildrenCount = allChildrenIds.filter((childId) =>
-      selectedCategories.includes(childId)
-    ).length;
-
-    if (selectedChildrenCount === allChildrenIds.length) {
-      // All children are selected
+    let allChildrenIds = Object.keys(relationShips?.children || {});
+    if (allChildrenIds.length == 0 && selectedCategories.includes(category)) {
       return <SelectedCheckBox />;
     }
+    if (allChildrenIds.length > 0) {
+      //check if all the children are in the selectedCateogries
+      let numberOfChildrenSelected = 0;
+      for (let i = 0; i < allChildrenIds.length; i++) {
+        if (selectedCategories.includes(allChildrenIds[i])) {
+          numberOfChildrenSelected++;
+        }
+      }
+      if (numberOfChildrenSelected == allChildrenIds.length) {
+        return <SelectedCheckBox />;
+      }
 
-    if (selectedChildrenCount > 0) {
-      // Some children are selected
-      return <PartialSelectedCheckBox />;
+      if (numberOfChildrenSelected > 0 && numberOfChildrenSelected < allChildrenIds.length) {
+        return <PartialSelectedCheckBox />;
+      }
     }
-
-    // No children are selected
     return <UnSelectedCheckBox />;
+    // return <Checkbox checked={selectedCategories.includes(category)} />;
   };
 
   return (
